@@ -128,43 +128,66 @@ export default function TransactionHistoryModal({ isOpen, onClose, clientId }: P
                   {transactions
                     .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
                     .map((tx: any) => (
-                      <tr
-                        key={tx.id}
-                        className="border-t border-gray-800 hover:bg-gray-800 cursor-pointer transition"
-                        onClick={() => setSelectedTx(tx)}
-                      >
-                        <td className="px-3 py-2">{tx.usdt}</td>
-                        <td className="px-3 py-2">{tx.usd}</td>
-                        <td className="px-3 py-2">{tx.profit}</td>
-                        <td className="px-3 py-2 flex items-center gap-2">
-                          {tx.paymentMethod && paymentIcons[tx.paymentMethod] ? (
-                            <>
-                              <img src={paymentIcons[tx.paymentMethod]} className="w-5 h-5" />
-                              <span>{tx.paymentMethod}</span>
-                            </>
-                          ) : (
-                            <span>{tx.paymentMethod || '-'}</span>
-                          )}
-                        </td>
-                        <td className="px-3 py-2 flex items-center gap-2">
-                          {tx.platform && platformIcons[tx.platform] ? (
-                            <>
-                              <img src={platformIcons[tx.platform]} className="w-5 h-5" />
-                              <span>{tx.platform}</span>
-                            </>
-                          ) : (
-                            <span>{tx.platform || '-'}</span>
-                          )}
-                        </td>
-                        <td className="px-3 py-2">
-  {new Intl.DateTimeFormat("es-ES", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(new Date(tx.date))}
-</td>
+             <tr
+  key={tx.id}
+  className="border-t border-gray-800 hover:bg-gray-800 cursor-pointer transition"
+  onClick={() => setSelectedTx(tx)}
+>
+  {/* USDT */}
+  <td className="px-3 py-2">{tx.usdt}</td>
 
-                      </tr>
+  {/* USD */}
+  <td className="px-3 py-2">{tx.usd}</td>
+
+  {/* Profit */}
+  <td className="px-3 py-2">{tx.profit}</td>
+
+  {/* Pago */}
+  <td className="px-3 py-2">
+    <div className="flex items-center gap-2 min-w-[120px]">
+      {tx.paymentMethod && paymentIcons[tx.paymentMethod] ? (
+        <>
+          <img
+            src={paymentIcons[tx.paymentMethod]}
+            className="w-5 h-5 object-contain shrink-0"
+            alt={tx.paymentMethod}
+          />
+          <span>{tx.paymentMethod}</span>
+        </>
+      ) : (
+        <span>{tx.paymentMethod || '-'}</span>
+      )}
+    </div>
+  </td>
+
+  {/* Plataforma */}
+  <td className="px-3 py-2">
+    <div className="flex items-center gap-2 min-w-[120px]">
+      {tx.platform && platformIcons[tx.platform] ? (
+        <>
+          <img
+            src={platformIcons[tx.platform]}
+            className="w-5 h-5 object-contain shrink-0"
+            alt={tx.platform}
+          />
+          <span>{tx.platform}</span>
+        </>
+      ) : (
+        <span>{tx.platform || '-'}</span>
+      )}
+    </div>
+  </td>
+
+  {/* Fecha */}
+  <td className="px-3 py-2">
+    {new Intl.DateTimeFormat("es-ES", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(new Date(tx.date))}
+  </td>
+</tr>
+
                     ))}
                 </tbody>
               </table>
