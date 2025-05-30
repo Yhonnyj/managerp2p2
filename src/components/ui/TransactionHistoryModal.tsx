@@ -156,7 +156,14 @@ export default function TransactionHistoryModal({ isOpen, onClose, clientId }: P
                             <span>{tx.platform || '-'}</span>
                           )}
                         </td>
-                        <td className="px-3 py-2">{tx.date}</td>
+                        <td className="px-3 py-2">
+  {new Intl.DateTimeFormat("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(new Date(tx.date))}
+</td>
+
                       </tr>
                     ))}
                 </tbody>
