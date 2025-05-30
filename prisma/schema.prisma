@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id        String        @id @default(cuid())
+  name      String
+  email     String?       @db.VarChar(255)
+  phone     String?       @db.VarChar(20)
+  country   String?       @db.VarChar(50)
+  address   String?       @db.Text
+  createdAt DateTime      @default(now())
+  userId    String        // 🔐 para multiusuario
+
+  transactions Transaction[]
+
+  @@index([userId])
+  @@unique([userId, name]) // evita duplicados por usuario
+}
+
+model Transaction {
+  id              String   @id @default(cuid())
+  transactionType String   // "compra" o "venta"
+  usdt            Decimal
+  usd             Decimal
+  platform        String
+  fee             Decimal  @default(0.0)
+  paymentMethod   String?
+  date            DateTime
+  createdAt       DateTime @default(now())
+
+  clientId        String
+  client          Client   @relation(fields: [clientId], references: [id])
+
+  userId          String   // 🔐 para multiusuario
+
+  @@index([userId])
+  @@index([clientId])
+}
