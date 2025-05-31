@@ -1,6 +1,7 @@
-import { clerkMiddleware } from '@clerk/nextjs/server'
+import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddlewareConfig } from "./clerk.config";
 
-export default clerkMiddleware()
+export default clerkMiddleware(clerkMiddlewareConfig);
 
 export const config = {
   matcher: [
@@ -8,4 +9,4 @@ export const config = {
     '/',
     '/(api|trpc)(.*)',
   ],
-}
+};

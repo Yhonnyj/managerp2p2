@@ -1,10 +1,18 @@
-// src/components/Sidebar.tsx
 'use client'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LogOut, LayoutDashboard, FileText, Users, BarChart2, CreditCard, FolderKanban, Layers } from 'lucide-react'
-import { UserButton } from '@clerk/nextjs'
+import {
+  LogOut,
+  LayoutDashboard,
+  FileText,
+  Users,
+  BarChart2,
+  CreditCard,
+  FolderKanban,
+  Layers
+} from 'lucide-react'
+import { UserButton, SignOutButton } from '@clerk/nextjs'
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -13,7 +21,7 @@ const navItems = [
   { name: 'Reportes', href: '/dashboard/reports', icon: BarChart2 },
   { name: 'Bancos', href: '/dashboard/banks', icon: CreditCard },
   { name: 'Finanzas', href: '/dashboard/finances', icon: FolderKanban },
-  { name: 'Categorías', href: '/dashboard/categories', icon: Layers },
+  { name: 'Categorías', href: '/dashboard/categories', icon: Layers }
 ]
 
 export default function Sidebar() {
@@ -50,10 +58,12 @@ export default function Sidebar() {
       {/* Footer: Avatar + Logout */}
       <div className="p-4 border-t border-gray-700">
         <div className="flex items-center justify-between gap-3">
-          <UserButton afterSignOutUrl="/" />
-          <Link href="/sign-out" className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300">
-            <LogOut className="w-4 h-4" /> Logout
-          </Link>
+          <UserButton afterSignOutUrl="/sign-in" />
+          <SignOutButton redirectUrl="/sign-in">
+            <button className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300">
+              <LogOut className="w-4 h-4" /> Logout
+            </button>
+          </SignOutButton>
         </div>
       </div>
     </aside>
