@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { X } from 'lucide-react'
 import countries from 'country-flag-emoji-json'
+import axios from 'axios'
 
 interface Props {
   isOpen: boolean
@@ -33,23 +34,16 @@ export default function AddClientModal({ isOpen, onClose, onSuccess }: Props) {
         address: formData.address?.trim() || '',
       }
 
-      const res = await fetch('/api/clients', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-
-      if (!res.ok) {
-        const errorData = await res.json()
-        throw new Error(errorData.error || 'Error al crear cliente')
-      }
-
-      return res.json()
+      const res = await axios.post('/api/clients', payload)
+      return res.data
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] })
       onSuccess?.()
       onClose()
+    },
+    onError: (err: any) => {
+      alert(err.message || '❌ Error al crear cliente')
     },
   })
 

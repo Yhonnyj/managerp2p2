@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
 import { UserRoundPlus, FileText, FileSpreadsheet, UserRoundPen, UserRoundX } from 'lucide-react'
 import TransactionHistoryModal from '@/components/ui/TransactionHistoryModal'
 import EditClientModal from '@/app/(dashboard)/clients/EditClientModal'
@@ -29,16 +30,14 @@ export default function ClientsPage() {
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ['clients'],
     queryFn: async () => {
-      const res = await fetch('/api/clients')
-      if (!res.ok) throw new Error('Error al obtener clientes')
-      return res.json()
+      const res = await axios.get('/api/clients')
+      return res.data
     },
   })
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-  const res = await fetch(`/api/clients?id=${id}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('Error al eliminar cliente')
+      await axios.delete(`/api/clients?id=${id}`)
       return true
     },
     onSuccess: () => {
@@ -83,7 +82,7 @@ export default function ClientsPage() {
         >
           <UserRoundPlus className="w-5 h-5" /> Agregar
         </button>
-       
+
         <button
           onClick={() => window.open('/api/clients/export/pdf', '_blank')}
           className="bg-gray-800 hover:bg-gray-700 px-4 py-3 rounded-lg flex items-center gap-2"
@@ -185,13 +184,13 @@ export default function ClientsPage() {
         }}
       />
 
-    {selectedClient && (
-  <EditClientModal
-    isOpen={isEditModalOpen}
-    onClose={() => setIsEditModalOpen(false)}
-    clientData={selectedClient}
-  />
-)}
+      {selectedClient && (
+        <EditClientModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          clientData={selectedClient}
+        />
+      )}
 
       {selectedClient && (
         <TransactionHistoryModal

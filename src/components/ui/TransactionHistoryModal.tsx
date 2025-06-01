@@ -6,6 +6,7 @@ import { FileText, FileSpreadsheet, X, Images } from 'lucide-react'
 import countries from 'country-flag-emoji-json'
 import platformIcons from '@/utils/platformIcons'
 import paymentIcons from '@/utils/paymentIcons'
+import axios from 'axios'
 
 type Props = {
   isOpen: boolean
@@ -23,9 +24,8 @@ export default function TransactionHistoryModal({ isOpen, onClose, clientId }: P
   const { data: transactionsData = { results: [] }, isLoading } = useQuery({
     queryKey: ['transactions-client', clientId],
     queryFn: async () => {
-      const res = await fetch(`/api/transactions?clientId=${clientId}`)
-      if (!res.ok) throw new Error('Error al cargar transacciones')
-      return res.json()
+      const res = await axios.get(`/api/transactions?clientId=${clientId}`)
+      return res.data
     },
     enabled: !!clientId && isOpen,
   })
@@ -33,9 +33,8 @@ export default function TransactionHistoryModal({ isOpen, onClose, clientId }: P
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
     queryFn: async () => {
-      const res = await fetch('/api/clients')
-      if (!res.ok) throw new Error('Error al cargar clientes')
-      return res.json()
+      const res = await axios.get('/api/clients')
+      return res.data
     },
     enabled: isOpen,
   })
@@ -63,12 +62,10 @@ export default function TransactionHistoryModal({ isOpen, onClose, clientId }: P
     <>
       <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 animate-fadeIn">
         <div className="bg-gray-900 text-white w-full max-w-5xl rounded-2xl shadow-2xl p-6 relative border border-gray-700">
-          {/* Cerrar */}
           <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white">
             <X className="w-6 h-6" />
           </button>
 
-          {/* Imágenes */}
           <div className="absolute top-16 right-4">
             <button
               onClick={() => setShowImagesSidebar(true)}
@@ -79,7 +76,6 @@ export default function TransactionHistoryModal({ isOpen, onClose, clientId }: P
             </button>
           </div>
 
-          {/* Cabecera */}
           <div className="flex items-center gap-4 border-b border-gray-700 pb-4 mb-6 mt-2">
             <img
               src={
@@ -101,9 +97,7 @@ export default function TransactionHistoryModal({ isOpen, onClose, clientId }: P
             </div>
           </div>
 
-          {/* Info + tabla */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Info */}
             <div className="bg-gray-800 rounded-lg p-4 text-sm space-y-3">
               <InfoItem label="Teléfono" value={client?.phone} />
               <InfoItem label="Dirección" value={client?.address} />
@@ -111,7 +105,6 @@ export default function TransactionHistoryModal({ isOpen, onClose, clientId }: P
               <InfoItem label="País" value={client?.country} />
             </div>
 
-            {/* Tabla */}
             <div className="col-span-2 max-h-96 overflow-y-auto overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-gray-800 text-gray-400">
@@ -128,66 +121,54 @@ export default function TransactionHistoryModal({ isOpen, onClose, clientId }: P
                   {transactions
                     .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
                     .map((tx: any) => (
-             <tr
-  key={tx.id}
-  className="border-t border-gray-800 hover:bg-gray-800 cursor-pointer transition"
-  onClick={() => setSelectedTx(tx)}
->
-  {/* USDT */}
-  <td className="px-3 py-2">{tx.usdt}</td>
-
-  {/* USD */}
-  <td className="px-3 py-2">{tx.usd}</td>
-
-  {/* Profit */}
-  <td className="px-3 py-2">{tx.profit}</td>
-
-  {/* Pago */}
-  <td className="px-3 py-2">
-    <div className="flex items-center gap-2 min-w-[120px]">
-      {tx.paymentMethod && paymentIcons[tx.paymentMethod] ? (
-        <>
-          <img
-            src={paymentIcons[tx.paymentMethod]}
-            className="w-5 h-5 object-contain shrink-0"
-            alt={tx.paymentMethod}
-          />
-          <span>{tx.paymentMethod}</span>
-        </>
-      ) : (
-        <span>{tx.paymentMethod || '-'}</span>
-      )}
-    </div>
-  </td>
-
-  {/* Plataforma */}
-  <td className="px-3 py-2">
-    <div className="flex items-center gap-2 min-w-[120px]">
-      {tx.platform && platformIcons[tx.platform] ? (
-        <>
-          <img
-            src={platformIcons[tx.platform]}
-            className="w-5 h-5 object-contain shrink-0"
-            alt={tx.platform}
-          />
-          <span>{tx.platform}</span>
-        </>
-      ) : (
-        <span>{tx.platform || '-'}</span>
-      )}
-    </div>
-  </td>
-
-  {/* Fecha */}
-  <td className="px-3 py-2">
-    {new Intl.DateTimeFormat("es-ES", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }).format(new Date(tx.date))}
-  </td>
-</tr>
-
+                      <tr
+                        key={tx.id}
+                        className="border-t border-gray-800 hover:bg-gray-800 cursor-pointer transition"
+                        onClick={() => setSelectedTx(tx)}
+                      >
+                        <td className="px-3 py-2">{tx.usdt}</td>
+                        <td className="px-3 py-2">{tx.usd}</td>
+                        <td className="px-3 py-2">{tx.profit}</td>
+                        <td className="px-3 py-2">
+                          <div className="flex items-center gap-2 min-w-[120px]">
+                            {tx.paymentMethod && paymentIcons[tx.paymentMethod] ? (
+                              <>
+                                <img
+                                  src={paymentIcons[tx.paymentMethod]}
+                                  className="w-5 h-5 object-contain shrink-0"
+                                  alt={tx.paymentMethod}
+                                />
+                                <span>{tx.paymentMethod}</span>
+                              </>
+                            ) : (
+                              <span>{tx.paymentMethod || '-'}</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-3 py-2">
+                          <div className="flex items-center gap-2 min-w-[120px]">
+                            {tx.platform && platformIcons[tx.platform] ? (
+                              <>
+                                <img
+                                  src={platformIcons[tx.platform]}
+                                  className="w-5 h-5 object-contain shrink-0"
+                                  alt={tx.platform}
+                                />
+                                <span>{tx.platform}</span>
+                              </>
+                            ) : (
+                              <span>{tx.platform || '-'}</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-3 py-2">
+                          {new Intl.DateTimeFormat("es-ES", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          }).format(new Date(tx.date))}
+                        </td>
+                      </tr>
                     ))}
                 </tbody>
               </table>
@@ -220,7 +201,6 @@ export default function TransactionHistoryModal({ isOpen, onClose, clientId }: P
             </div>
           </div>
 
-          {/* Exportar */}
           <div className="flex justify-end gap-4 mt-8">
             <button
               onClick={exportToPDF}

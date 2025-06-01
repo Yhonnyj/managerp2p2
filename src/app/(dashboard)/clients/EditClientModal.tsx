@@ -5,6 +5,7 @@ import { X } from 'lucide-react'
 import countries from 'country-flag-emoji-json'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
+import axios from 'axios'
 
 interface Props {
   isOpen: boolean
@@ -36,13 +37,8 @@ export default function EditClientModal({ isOpen, onClose, clientData }: Props) 
 
   const { mutate: updateClient, isPending } = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const res = await fetch(`/api/clients?id=${clientData.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-      if (!res.ok) throw new Error('Error al actualizar cliente')
-      return res.json()
+      const res = await axios.put(`/api/clients?id=${clientData.id}`, data)
+      return res.data
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] })

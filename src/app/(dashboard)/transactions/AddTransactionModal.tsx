@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import axios from 'axios'
 import toast from 'react-hot-toast'
 import { X, UserRoundPlus } from 'lucide-react'
 import platformIcons from '@/utils/platformIcons'
@@ -32,9 +33,8 @@ export default function AddTransactionModal({ isOpen, onClose, onSave }: Props) 
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const res = await fetch('/api/clients')
-        const data = await res.json()
-        setClientesData(data)
+        const res = await axios.get('/api/clients')
+        setClientesData(res.data)
       } catch {
         toast.error('Error cargando clientes')
       }
@@ -57,20 +57,19 @@ export default function AddTransactionModal({ isOpen, onClose, onSave }: Props) 
       return
     }
 
-   const localDate = new Date()
-localDate.setHours(12, 0, 0, 0)
+    const localDate = new Date()
+    localDate.setHours(12, 0, 0, 0)
 
-const newTransaction = {
-  transactionType: tipo.toLowerCase(),
-  usdt: parseFloat(usdt),
-  usd: parseFloat(usd),
-  platform,
-  fee,
-  paymentMethod,
-  clientId: client,
-  date: localDate,
-}
-
+    const newTransaction = {
+      transactionType: tipo.toLowerCase(),
+      usdt: parseFloat(usdt),
+      usd: parseFloat(usd),
+      platform,
+      fee,
+      paymentMethod,
+      clientId: client,
+      date: localDate,
+    }
 
     onSave(newTransaction)
     onClose()
@@ -78,11 +77,10 @@ const newTransaction = {
 
   const handleClientCreated = async () => {
     try {
-      const res = await fetch('/api/clients')
-      const data = await res.json()
-      setClientesData(data)
-      if (data.length > 0) {
-        setClient(data[0].id)
+      const res = await axios.get('/api/clients')
+      setClientesData(res.data)
+      if (res.data.length > 0) {
+        setClient(res.data[0].id)
       }
     } catch {
       toast.error('Error actualizando clientes')

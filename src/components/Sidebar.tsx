@@ -18,10 +18,10 @@ const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Transacciones', href: '/transactions', icon: FileText },
   { name: 'Clientes', href: '/clients', icon: Users },
-  { name: 'Reportes', href: '/dashboard/reports', icon: BarChart2 },
-  { name: 'Bancos', href: '/dashboard/banks', icon: CreditCard },
-  { name: 'Finanzas', href: '/dashboard/finances', icon: FolderKanban },
-  { name: 'Categorías', href: '/dashboard/categories', icon: Layers }
+  { name: 'Reportes', href: 'reports', icon: BarChart2 },
+  { name: 'Bancos', href: '/banks', icon: CreditCard },
+  { name: 'Finanzas', href: '/finances', icon: FolderKanban },
+  { name: 'Categorías', href: '/categories', icon: Layers }
 ]
 
 export default function Sidebar() {
