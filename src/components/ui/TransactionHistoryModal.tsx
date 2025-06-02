@@ -11,7 +11,7 @@ import axios from 'axios'
 type Props = {
   isOpen: boolean
   onClose: () => void
-  clientId: string
+  clientId: string | null
 }
 
 export default function TransactionHistoryModal({ isOpen, onClose, clientId }: Props) {

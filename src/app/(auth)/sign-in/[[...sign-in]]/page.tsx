@@ -9,6 +9,7 @@ export default function SignInPage() {
         path="/sign-in"
         routing="path"
         signUpUrl="/sign-up"
+        redirectUrl="/dashboard" // ✅ Esto asegura redirección al dashboard
         appearance={{
           elements: {
             formButtonPrimary:
@@ -19,4 +20,3 @@ export default function SignInPage() {
     </div>
   );
 }
-

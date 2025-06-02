@@ -2,12 +2,13 @@
 
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { CopyPlus, FileText, Sheet, CloudDownload } from 'lucide-react'
+import { CopyPlus, Sheet, CloudDownload, FileText } from 'lucide-react'
 import Image from 'next/image'
-import axios from 'axios'
+import axios from '@/utils/axios'
 import paymentIcons from '@/utils/paymentIcons'
 import platformIcons from '@/utils/platformIcons'
 import AddTransactionModal from './AddTransactionModal'
+import ExportExcelPdfModal from '@/components/ui/ExportExcelPdfModal'
 
 type Transaction = {
   id: string
@@ -28,7 +29,7 @@ type TransactionsResponse = {
 }
 
 const fetchTransactions = async (page: number): Promise<TransactionsResponse> => {
-  const res = await axios.get(`/api/transactions?page=${page}`)
+  const res = await axios.get(`/transactions?page=${page}`)
   return res.data
 }
 
@@ -37,6 +38,8 @@ export default function TransactionsPage() {
   const [file, setFile] = useState<File | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false)
+  const [exportType, setExportType] = useState<'excel' | 'pdf'>('excel')
 
   const queryClient = useQueryClient()
 
@@ -60,7 +63,7 @@ export default function TransactionsPage() {
     const formData = new FormData()
     formData.append('file', file)
     try {
-      await axios.post('/api/transaction/import/excel', formData)
+      await axios.post('/transaction/import/excel', formData)
       alert('✅ Importación exitosa')
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
     } catch {
@@ -70,44 +73,11 @@ export default function TransactionsPage() {
 
   const handleAddTransaction = async (tx: any) => {
     try {
-      await axios.post('/api/transactions', tx)
+      await axios.post('/transactions', tx)
       setIsModalOpen(false)
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
     } catch {
       alert('❌ Error al guardar transacción')
-    }
-  }
-
-  const downloadFile = async (type: 'pdf' | 'excel') => {
-    const endpoint =
-      type === 'pdf'
-        ? '/api/transaction/export/pdf'
-        : '/api/transaction/export/excel'
-
-    try {
-      const res = await axios.get(endpoint, {
-        responseType: 'blob',
-      })
-
-      const blob = new Blob([res.data], {
-        type:
-          type === 'pdf'
-            ? 'application/pdf'
-            : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      })
-      const url = window.URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute(
-        'download',
-        `reporte-transacciones.${type === 'pdf' ? 'pdf' : 'xlsx'}`
-      )
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      window.URL.revokeObjectURL(url)
-    } catch {
-      alert(`❌ Error al descargar ${type.toUpperCase()}`)
     }
   }
 
@@ -142,17 +112,23 @@ export default function TransactionsPage() {
         </button>
 
         <button
-          onClick={() => downloadFile('pdf')}
-          className="bg-gray-800 hover:bg-gray-700 px-4 py-3 rounded-lg flex items-center gap-2"
-        >
-          <FileText className="w-5 h-5" /> PDF
-        </button>
-
-        <button
-          onClick={() => downloadFile('excel')}
+          onClick={() => {
+            setExportType('excel')
+            setIsExportModalOpen(true)
+          }}
           className="bg-gray-800 hover:bg-gray-700 px-4 py-3 rounded-lg flex items-center gap-2"
         >
           <Sheet className="w-5 h-5" /> Excel
+        </button>
+
+        <button
+          onClick={() => {
+            setExportType('pdf')
+            setIsExportModalOpen(true)
+          }}
+          className="bg-gray-800 hover:bg-gray-700 px-4 py-3 rounded-lg flex items-center gap-2"
+        >
+          <FileText className="w-5 h-5" /> PDF
         </button>
 
         <label className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-lg cursor-pointer flex items-center gap-2">
@@ -241,9 +217,7 @@ export default function TransactionsPage() {
           Página <b>{currentPage}</b> de <b>{totalPages}</b>
         </span>
         <button
-          onClick={() =>
-            setCurrentPage((p) => (currentPage < totalPages ? p + 1 : p))
-          }
+          onClick={() => setCurrentPage((p) => (currentPage < totalPages ? p + 1 : p))}
           disabled={currentPage === totalPages}
           className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded disabled:opacity-30"
         >
@@ -256,6 +230,14 @@ export default function TransactionsPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleAddTransaction}
+      />
+
+      {/* Modal exportar Excel o PDF */}
+      <ExportExcelPdfModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        tipo={exportType}
+        endpoint={exportType === 'excel' ? '/transactions/export/excel' : '/transactions/export/pdf'}
       />
     </div>
   )
