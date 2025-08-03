@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { SignIn } from "@clerk/nextjs";
+import { SignIn } from '@clerk/nextjs'
 
 export default function SignInPage() {
   return (
@@ -8,15 +8,16 @@ export default function SignInPage() {
       <SignIn
         path="/sign-in"
         routing="path"
-        signUpUrl="/sign-up"
-        redirectUrl="/dashboard" // ✅ Esto asegura redirección al dashboard
+        redirectUrl="/dashboard" // ✅ Redirige al dashboard
         appearance={{
           elements: {
             formButtonPrimary:
-              "bg-orange-500 hover:bg-orange-600 text-sm normal-case",
+              'bg-orange-500 hover:bg-orange-600 text-sm normal-case',
           },
         }}
       />
     </div>
-  );
+  )
 }
+
+

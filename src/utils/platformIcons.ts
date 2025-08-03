@@ -5,7 +5,7 @@ const platforms = [
   { name: "Bybit", image: "/platforms/bybit.png" },
   { name: "Dorado", image: "/platforms/dorado.png" },
   { name: "Kucoin", image: "/platforms/kucoin.png" },
-  { name: "Paxful", image: "/platforms/paxful.png" },
+  { name: "TuCapi", image: "/platforms/tucapi.png" },
 ];
 
 const platformIcons: Record<string, string> = {};
