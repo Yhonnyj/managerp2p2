@@ -21,10 +21,11 @@ const navItems = [
   { name: 'Transacciones', href: '/transactions', icon: FileText },
   { name: 'Clientes', href: '/clients', icon: Users },
   { name: 'Reportes', href: '/reports', icon: BarChart2 },
-  { name: 'Bancos', href: '/banks', icon: CreditCard },
-  { name: 'Finanzas', href: '/finances', icon: FolderKanban },
-  { name: 'Categorías', href: '/categories', icon: Layers }
+  { name: 'Bancos', href: '/banks', icon: CreditCard, soon: true },
+  { name: 'Finanzas', href: '/finances', icon: FolderKanban, soon: true },
+  { name: 'Categorías', href: '/categories', icon: Layers, soon: true },
 ]
+
 
 export default function Sidebar() {
   const pathname = usePathname()
