@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ResponsivePie } from "@nivo/pie";
 import { ResponsiveBar } from "@nivo/bar";
-import { TrendingUp, TrendingDown, ShoppingCart, Store } from "lucide-react";
+import { TrendingUp, TrendingDown, ArrowLeftRight, BanknoteArrowUp } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import axios from "axios";
 
@@ -34,13 +34,13 @@ export default function ReportsPage() {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white min-h-screen p-8 flex-1 ml-64">
+      <div className="bg-900 via-gray-800 to-gray-900 text-white min-h-screen p-8 flex-1 ml-64">
         <h1 className="text-3xl font-bold mb-8">Reportes</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatCard icon={<TrendingUp className="w-10 h-10 text-orange-400 animate-pulse" />} title="Transacciones" value={resumen?.transacciones_totales ?? 0} />
-          <StatCard icon={<Store className="w-10 h-10 text-green-400 animate-pulse" />} title="Ganancias" value={`$${(resumen?.ganancia || 0).toFixed(2)}`} />
-          <StatCard icon={<ShoppingCart className="w-10 h-10 text-blue-400 animate-pulse" />} title="Compras" value={`$${resumen?.compras?.usd ?? 0}`} />
+          <StatCard icon={<ArrowLeftRight className="w-10 h-10 text-orange-400 animate-pulse" />} title="Transacciones" value={resumen?.transacciones_totales ?? 0} />
+          <StatCard icon={<BanknoteArrowUp className="w-10 h-10 text-green-400 animate-pulse" />} title="Ganancias" value={`$${(resumen?.ganancia || 0).toFixed(2)}`} />
+          <StatCard icon={<TrendingUp  className="w-10 h-10 text-blue-400 animate-pulse" />} title="Compras" value={`$${resumen?.compras?.usd ?? 0}`} />
           <StatCard icon={<TrendingDown className="w-10 h-10 text-red-400 animate-pulse" />} title="Ventas" value={`$${resumen?.ventas?.usd ?? 0}`} />
         </div>
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { TrendingUp, DollarSign, ShoppingCart, Store } from 'lucide-react'
+import { TrendingUp, BanknoteArrowUp , ArrowLeftRight, TrendingDown } from 'lucide-react'
 
 type Summary = {
   transacciones_totales: number
@@ -16,24 +16,24 @@ type Props = {
 export default function DashboardStats({ data }: Props) {
   const stats = [
     {
-      title: 'Transacciones Totales',
+      title: 'Transacciones',
       value: data.transacciones_totales,
-      icon: <TrendingUp className="w-10 h-10 text-orange-400 animate-pulse" />,
+      icon: <ArrowLeftRight className="w-10 h-10 text-orange-400 animate-pulse" />,
     },
     {
       title: 'Ganancias',
       value: `$${data.ganancia.toFixed(2)}`,
-      icon: <DollarSign className="w-10 h-10 text-orange-400 animate-pulse" />,
+      icon: <BanknoteArrowUp className="w-10 h-10 text-orange-400 animate-pulse" />,
     },
     {
       title: 'Compras',
       value: data.compras,
-      icon: <ShoppingCart className="w-10 h-10 text-orange-400 animate-pulse" />,
+      icon: <TrendingUp  className="w-10 h-10 text-orange-400 animate-pulse" />,
     },
     {
       title: 'Ventas',
       value: data.ventas,
-      icon: <Store className="w-10 h-10 text-orange-400 animate-pulse" />,
+      icon: <TrendingDown className="w-10 h-10 text-orange-400 animate-pulse" />,
     },
   ]
 

@@ -65,7 +65,7 @@ export default function ClientsPage() {
   }
 
   return (
-    <div className="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 min-h-screen text-white p-8 ml-64">
+    <div className="bg-gray-900 via-gray-800 to-gray-900 min-h-screen text-white p-8 ml-64">
       <h1 className="text-3xl font-bold mb-8">Clientes</h1>
 
       <div className="flex flex-wrap items-center gap-3 mb-8">

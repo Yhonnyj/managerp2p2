@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
   });
 
   const total = transacciones.length;
-  const ganancia = transacciones.reduce((acc, t) => acc + Number(t.fee), 0);
+  const ganancia = transacciones.reduce((acc, t) => acc + (Number(t.usd) - Number(t.usdt)), 0);
 
   const compras = transacciones.filter(t => t.transactionType === "compra");
   const ventas = transacciones.filter(t => t.transactionType === "venta");
@@ -70,17 +70,25 @@ export async function GET(req: NextRequest) {
   ];
 
   const operaciones_mensuales = await prisma.transaction.groupBy({
-    by: ["date"],
-    where: { userId },
-    _count: { id: true },
-    orderBy: { date: "asc" },
-  });
+  by: ["date"],
+  where: { userId },
+  _count: { id: true },
+  orderBy: { date: "asc" },
+});
 
-  const opMensualesData = operaciones_mensuales.map(m => {
-    const fecha = new Date(m.date);
-    const label = `${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getFullYear()}`;
-    return { name: label, value: m._count.id };
-  });
+const grouped = new Map<string, number>();
+
+operaciones_mensuales.forEach((t) => {
+  const fecha = new Date(t.date);
+  const mesAnio = `${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getFullYear()}`;
+  grouped.set(mesAnio, (grouped.get(mesAnio) || 0) + t._count.id);
+});
+
+const opMensualesData = Array.from(grouped.entries()).map(([name, value]) => ({
+  name,
+  value
+}));
+
 
   return NextResponse.json({
     resumen,
